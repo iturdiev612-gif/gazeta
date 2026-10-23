@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevBlog // Tech Space</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styles -->
+    <style>
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Article Prose Styling */
+        .prose-custom h1 { font-size: 2rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 1rem; color: #f8fafc; }
+        .prose-custom h2 { font-size: 1.5rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; color: #f1f5f9; }
+        .prose-custom h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #e2e8f0; }
+        .prose-custom p { margin-bottom: 1.25rem; line-height: 1.75; color: #cbd5e1; }
+        .prose-custom ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; color: #cbd5e1; }
+        .prose-custom ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1.25rem; color: #cbd5e1; }
+        .prose-custom li { margin-bottom: 0.5rem; }
+        .prose-custom blockquote { border-left: 4px solid #3b82f6; padding-left: 1rem; margin-top: 1rem; margin-bottom: 1rem; font-style: italic; color: #94a3b8; background: rgba(30, 41, 59, 0.5); padding-top: 0.5rem; padding-bottom: 0.5rem; border-radius: 0 0.375rem 0.375rem 0; }
+        .prose-custom code { font-family: 'Fira Code', monospace; background-color: #1e293b; color: #f43f5e; padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-size: 0.875em; }
+        .prose-custom pre { font-family: 'Fira Code', monospace; background-color: #0f172a; border: 1px solid #334155; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1.25rem; }
+        .prose-custom pre code { background-color: transparent; color: inherit; padding: 0; }
+        .prose-custom img { border-radius: 0.5rem; margin-top: 1.5rem; margin-bottom: 1.5rem; max-width: 100%; height: auto; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-full flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- HEADER & NAVIGATION -->
+    <header class="sticky top-0 z-30 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 transition-all duration-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 gap-4">
+                
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer" id="nav-logo">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                        <i class="fa-solid fa-code text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-xl tracking-tight gradient-text">DevBlog</span>
+                        <span class="text-xs font-mono text-slate-400 block -mt-1">// Tech Space</span>
+                    </div>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-md hidden md:block">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="text" id="search-input" placeholder="Search title, content, or tags..." 
+                               class="w-full bg-slate-800/80 border border-slate-700/80 rounded-xl pl-10 pr-10 py-2 text-sm text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all">
+                        <button id="clear-search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200">
+                            <i class="fa-solid fa-xmark text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-3">
+                    <button id="open-create-modal" class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white text-sm font-medium px-4 py-2 rounded-xl shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all duration-200 active:scale-95">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span>Create Post</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Search Bar -->
+            <div class="pb-3 md:hidden">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="mobile-search-input" placeholder="Search posts..." 
+                           class="w-full bg-slate-800/80 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- VIEW 1: HOME FEED VIEW -->
+        <section id="feed-view" class="space-y-8 transition-opacity duration-300">
+            
+            <!-- Hero / Tag Filter Section -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-900/90 to-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-2xl">
+                <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-2xl">
+                    <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
+                        Insights for Modern Developers
+                    </h1>
+                    <p class="text-slate-400 text-sm sm:text-base mb-6">
+                        Explore tutorials, architectural patterns, and practical guides written by developers, for developers.
+                    </p>
+
+                    <!-- Tag Filter Chips -->
+                    <div class="flex flex-wrap items-center gap-2" id="tag-filters">
+                        <!-- Dynamic filter buttons will render here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feed Status Bar -->
+            <div class="flex items-center justify-between text-sm text-slate-400 border-b border-slate-800/80 pb-4">
+                <div id="feed-status-text">
+                    Showing all articles
+                </div>
+                <div class="flex items-center gap-2">
+                    <label for="sort-select" class="hidden sm:inline">Sort by:</label>
+                    <select id="sort-select" class="bg-slate-900 border border-slate-800 text-slate-300 rounded-lg text-xs sm:text-sm px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-500">
+                        <option value="newest">Newest First</option>
+                        <option value="popular">Most Liked</option>
+                        <option value="comments">Most Commented</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Articles Grid -->
+            <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Post Cards dynamically injected here -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="hidden text-center py-16 bg-slate-900/40 rounded-2xl border border-slate-800 border-dashed">
+                <i class="fa-solid fa-ghost text-4xl text-slate-600 mb-3"></i>
+                <h3 class="text-lg font-semibold text-slate-300">No articles found</h3>
+                <p class="text-sm text-slate-500 max-w-md mx-auto mt-1 mb-4">We couldn't find any articles matching your current search or category filter.</p>
+                <button id="reset-filters-btn" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm px-4 py-2 rounded-xl transition-colors">
+                    Reset Filters
+                </button>
+            </div>
+        </section>
+
+        <!-- VIEW 2: ARTICLE DETAIL VIEW -->
+        <section id="detail-view" class="hidden space-y-8 max-w-4xl mx-auto transition-opacity duration-300">
+            
+            <!-- Navigation Back Button -->
+            <div>
+                <button id="back-to-feed-btn" class="inline-flex items-center gap-2 text-slate-400 hover:text-brand-500 text-sm font-medium group transition-colors">
+                    <i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i>
+                    <span>Back to Articles</span>
+                </button>
+            </div>
+
+            <!-- Main Article Card -->
+            <article class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+                <!-- Cover Image -->
+                <div class="relative h-64 sm:h-96 w-full bg-slate-950 overflow-hidden">
+                    <img id="detail-cover" class="w-full h-full object-cover" src="" alt="Article cover image">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+                    
+                    <!-- Tag Badge -->
+                    <div class="absolute top-4 left-4">
+                        <span id="detail-category" class="bg-blue-600/90 backdrop-blur-md text-white text-xs font-semibold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg">
+                            Tag
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Article Body Content -->
+                <div class="p-6 sm:p-10 space-y-6">
+                    <!-- Title & Metadata -->
+                    <div>
+                        <h1 id="detail-title" class="text-2xl sm:text-4xl font-extrabold text-white leading-tight mb-4">
+                            Article Title Placeholder
+                        </h1>
+                        
+                        <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-800">
+                            <!-- Author -->
+                            <div class="flex items-center gap-3">
+                                <img id="detail-author-avatar" class="w-11 h-11 rounded-full object-cover ring-2 ring-blue-500/30" src="" alt="Author Avatar">
+                                <div>
+                                    <div id="detail-author-name" class="font-semibold text-slate-200 text-sm">Author Name</div>
+                                    <div class="text-xs text-slate-400 flex items-center gap-2 mt-0.5">
+                                        <span id="detail-date">Date</span>
+                                        <span>•</span>
+                                        <span id="detail-read-time">5 min read</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Actions -->
+                            <div class="flex items-center gap-3">
+                                <button id="detail-like-btn" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-rose-500/10 hover:text-rose-500 border border-slate-700 text-slate-300 px-4 py-2 rounded-xl transition-all active:scale-95">
+                                    <i class="fa-regular fa-heart text-base transition-transform"></i>
+                                    <span id="detail-like-count" class="font-semibold text-sm">0</span>
+                                </button>
+                                <button id="share-btn" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl border border-slate-700 transition-colors" title="Copy Link">
+                                    <i class="fa-solid fa-share-nodes"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Article Markdown Text HTML render -->
+                    <div id="detail-content" class="prose-custom text-slate-300">
+                        <!-- Dynamic HTML content injected here -->
+                    </div>
+                </div>
+            </article>
+
+            <!-- COMMENTS SECTION -->
+            <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-8 shadow-xl">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-regular fa-comments text-brand-500"></i>
+                        <span>Discussion (<span id="detail-comment-count">0</span>)</span>
+                    </h3>
+                </div>
+
+                <!-- Add Comment Form -->
+                <form id="add-comment-form" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Your Name</label>
+                            <input type="text" id="comment-author" required placeholder="e.g. Alex Rivera" 
+                                   class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Comment Content</label>
+                        <textarea id="comment-text" required rows="3" placeholder="Join the discussion... What are your thoughts?" 
+                                  class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 resize-y"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white font-medium text-sm px-5 py-2.5 rounded-xl shadow-lg shadow-brand-500/20 transition-all active:scale-95">
+                            Post Comment
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Comments List -->
+                <div id="comments-list" class="space-y-4 pt-2">
+                    <!-- Dynamic comments list rendering -->
+                </div>
+            </section>
+        </section>
+
+    </main>
+
+    <!-- CREATE POST MODAL -->
+    <div id="create-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden transform transition-all my-8">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-brand-500"></i>
+                    <span>Create New Article</span>
+                </h3>
+                <button id="close-modal-btn" class="text-slate-400 hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-800 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Form -->
+            <form id="create-post-form" class="p-6 space-y-5">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Article Title *</label>
+                    <input type="text" id="post-title" required placeholder="e.g. Master0ing TypeScript Design Patterns" 
+                           class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Category Tag *</label>
+                        <select id="post-category" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <option value="JavaScript">JavaScript</option>
+                            <option value="CSS">CSS</option>
+                            <option value="Backend">Backend</option>
+                            <option value="Career">Career</option>
+                            <option value="Architecture">Architecture</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Author Name *</label>
+                        <input type="text" id="post-author" required placeholder="e.g. Jane Doe" 
+                               class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Cover Image URL (Optional)</label>
+                    <input type="url" id="post-cover" placeholder="https://images.unsplash.com/..." 
+                           class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    <p class="text-xs text-slate-500 mt-1">Leave empty to auto-generate a sleek tech placeholder background image.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Article Content (Supports Basic Markdown) *</label>
+                    <textarea id="post-content" required rows="7" placeholder="Write your post here... Use # for titles, ## for subheadings, ``` for code blocks, and > for blockquotes." 
+                              class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-sm text-slate-200 placeholder-slate-500 font-mono focus:outline-none focus:ring-2 focus:ring-brand-500 resize-y"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+                    <button type="button" id="cancel-modal-btn" class="px-4 py-2 text-sm text-slate-400 hover:text-slate-200 font-medium transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white font-medium text-sm px-5 py-2 rounded-xl shadow-lg shadow-brand-500/20 transition-all active:scale-95">
+                        Publish Post
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto border-t border-slate-800/80 bg-slate-900/50 py-6 text-slate-500 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+                &copy; 2026 DevBlog Tech Space. Built with standard Vanilla JavaScript & Tailwind CSS.
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="reset-storage-btn" class="hover:text-rose-400 transition-colors flex items-center gap-1">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Reset Demo Data</span>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /**
+         * INITIAL SEED DATA
+         */
+        const INITIAL_POSTS = [
+            {
+                id: 'post-1',
+                title: 'Getting Started with Modern JavaScript ES2026',
+                category: 'JavaScript',
+                author: {
+                    name: 'Sarah Connor',
+                    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150'
+                },
+                date: 'Oct 18, 2026',
+                readTime: '4 min read',
+                likes: 42,
+                liked: false,
+                coverImage: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1000&auto=format&fit=crop&q=80',
+                excerpt: 'Explore the newest features added to JavaScript in recent updates, from pattern matching to pipeline operators and async iteration enhancements.',
+                content: `
+JavaScript continues to evolve at a rapid pace. In this modern era, web development requires a solid understanding of clean code idioms, modern syntax, and performant asynchronous execution.
+
+## Key Highlights
+
+Modern JavaScript emphasizes clarity, reduced boilerplate, and explicit contracts.
+
+### 1. Enhanced Pattern Matching
+Pattern matching simplifies complex conditional branching and object destructuring into clean, declarative code blocks:
+
+\`\`\`javascript
+const response = await fetch('/api/user/data');
+const state = match(response) {
+    { status: 200, data } => renderDashboard(data),
+    { status: 401 } => redirectToLogin(),
+    _ => showGenericError()
+};
+\`\`\`
+
+### 2. Modern Immutability Patterns
+Working with state predictably is easier than ever. The \`toSorted()\`, \`toSpliced()\`, and \`with()\` methods allow pure array modifications without altering source references.
+
+> "Write programs that do one thing and do it well. Write programs to work together." — Unix Philosophy
+
+### Summary
+Adopting modern conventions keeps your codebases maintainable and scalable. Stay curious and keep experimenting!
+                `,
+                comments: [
+                    {
+                        id: 'c-1',
+                        author: 'Alex Chen',
+                        text: 'Great article! The pattern matching breakdown was super clear.',
+                        date: '2 hours ago'
+                    },
+                    {
+                        id: 'c-2',
+                        author: 'Maria Garcia',
+                        text: 'Immutable array utilities have saved me so many unexpected state mutation bugs in React recently.',
+                        date: '1 day ago'
+                    }
+                ]
+            },
+            {
+                id: 'post-2',
+                title: 'CSS Grid vs Flexbox: When to Use Which in Modern Layouts',
+                category: 'CSS',
+                author: {
+                    name: 'Marcus Vance',
+                    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150'
+                },
+                date: 'Oct 12, 2026',
+                readTime: '6 min read',
+                likes: 89,
+                liked: false,
+                coverImage: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=1000&auto=format&fit=crop&q=80',
+                excerpt: 'Demystifying 2D CSS Grid and 1D Flexbox layouts. Learn when to leverage grid structural power versus flex alignment ease.',
+                content: `
+One of the most common debates frontend developers face is choosing between CSS Grid and Flexbox. While they overlap in capabilities, they were designed for distinct primary purposes.
+
+## The Mental Model
+
+* **Flexbox** is designed for **one-dimensional** layouts (either a single row OR a single column).
+* **Grid** is designed for **two-dimensional** layouts (rows AND columns simultaneously).
+
+## Quick Decision Matrix
+
+### Use Flexbox when:
+1. You are positioning UI components in a single line (like a Navbar or Button bar).
+2. You want elements to size according to their natural content payload.
+3. Aligning items vertically in a parent container is your primary goal.
+
+### Use Grid when:
+1. You are building an overall page structure or article feed layout.
+2. You need precise multi-column layouts that adjust across responsive breakpoints.
+3. You need explicit row and column overlapping areas.
+
+\`\`\`css
+/* Clean CSS Grid Responsive Layout */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+\`\`\`
+
+> Rule of thumb: Layout structure = Grid. Internal component alignment = Flexbox.
+                `,
+                comments: [
+                    {
+                        id: 'c-3',
+                        author: 'Elena Rostova',
+                        text: 'The auto-fit minmax CSS grid tip is my absolute go-to for responsive cards!',
+                        date: '3 days ago'
+                    }
+                ]
+            },
+            {
+                id: 'post-3',
+                title: 'Building Resilient REST APIs with Node.js and Express',
+                category: 'Backend',
+                author: {
+                    name: 'Devon Taylor',
+                    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150'
+                },
+                date: 'Sep 29, 2026',
+                readTime: '8 min read',
+                likes: 64,
+                liked: false,
+                coverImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1000&auto=format&fit=crop&q=80',
+                excerpt: 'Best practices for API middleware, rate limiting, structured error handling, and scalable route organization in Node.js backend services.',
+                content: `
+Building production-ready APIs requires more than just listening on a port and returning JSON. You need structure, rate limiting, validation, and error management.
+
+## 1. Centralized Error Middleware
+
+Never leak raw database stack traces directly to API clients. Use a global error handler middleware:
+
+\`\`\`javascript
+// Global Express Error Handling Middleware
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    console.error(\`[Error] \${err.message}\`);
+    
+    res.status(statusCode).json({
+        success: false,
+        error: err.message || 'Internal Server Error'
+    });
+});
+\`\`\`
+
+## 2. Input Validation & Sanitization
+Always validate request body and query params before execution using libraries like Zod or Joi.
+
+> Security tip: Enforce proper CORS configuration and strict payload size limits on all public endpoints.
+                `,
+                comments: []
+            }
+        ];
+
+        /**
+         * STATE MANAGEMENT
+         */
+        let posts = [];
+        let currentFilterCategory = 'All';
+        let searchQuery = '';
+        let currentSort = 'newest';
+        let activePostId = null;
+
+        /**
+         * DOM ELEMENTS
+         */
+        const feedView = document.getElementById('feed-view');
+        const detailView = document.getElementById('detail-view');
+        const articlesGrid = document.getElementById('articles-grid');
+        const emptyState = document.getElementById('empty-state');
+        const tagFiltersContainer = document.getElementById('tag-filters');
+        const searchInput = document.getElementById('search-input');
+        const mobileSearchInput = document.getElementById('mobile-search-input');
+        const clearSearchBtn = document.getElementById('clear-search');
+        const sortSelect = document.getElementById('sort-select');
+        const feedStatusText = document.getElementById('feed-status-text');
+
+        // Modal Elements
+        const createModal = document.getElementById('create-modal');
+        const openCreateModalBtn = document.getElementById('open-create-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const cancelModalBtn = document.getElementById('cancel-modal-btn');
+        const createPostForm = document.getElementById('create-post-form');
+
+        // Detail View Elements
+        const backToFeedBtn = document.getElementById('back-to-feed-btn');
+        const detailCover = document.getElementById('detail-cover');
+        const detailCategory = document.getElementById('detail-category');
+        const detailTitle = document.getElementById('detail-title');
+        const detailAuthorAvatar = document.getElementById('detail-author-avatar');
+        const detailAuthorName = document.getElementById('detail-author-name');
+        const detailDate = document.getElementById('detail-date');
+        const detailReadTime = document.getElementById('detail-read-time');
+        const detailLikeBtn = document.getElementById('detail-like-btn');
+        const detailLikeCount = document.getElementById('detail-like-count');
+        const detailContent = document.getElementById('detail-content');
+        const detailCommentCount = document.getElementById('detail-comment-count');
+        const commentsList = document.getElementById('comments-list');
+        const addCommentForm = document.getElementById('add-comment-form');
+
+        // General
+        const navLogo = document.getElementById('nav-logo');
+        const resetStorageBtn = document.getElementById('reset-storage-btn');
+        const resetFiltersBtn = document.getElementById('reset-filters-btn');
+        const shareBtn = document.getElementById('share-btn');
+
+        /**
+         * APP INITIALIZATION
+         */
+        function initApp() {
+            loadPostsFromStorage();
+            renderCategoryFilters();
+            renderFeed();
+            setupEventListeners();
+        }
+
+        /**
+         * LOCAL STORAGE HELPERS
+         */
+        function loadPostsFromStorage() {
+            const savedData = localStorage.getItem('devblog_posts');
+            if (savedData) {
+                try {
+                    posts = JSON.parse(savedData);
+                } catch (e) {
+                    console.error('Failed to parse local storage data', e);
+                    posts = [...INITIAL_POSTS];
+                }
+            } else {
+                posts = [...INITIAL_POSTS];
+                savePostsToStorage();
+            }
+        }
+
+        function savePostsToStorage() {
+            localStorage.setItem('devblog_posts', JSON.stringify(posts));
+        }
+
+        /**
+         * CATEGORIES & FILTERING
+         */
+        function renderCategoryFilters() {
+            const categories = ['All', 'JavaScript', 'CSS', 'Backend', 'Career', 'Architecture'];
+            tagFiltersContainer.innerHTML = categories.map(cat => {
+                const isActive = cat === currentFilterCategory;
+                return `
+                    <button data-category="${cat}" class="tag-chip text-xs font-medium px-3.5 py-1.5 rounded-full border transition-all duration-200 ${
+                        isActive 
+                        ? 'bg-brand-600 border-brand-500 text-white shadow-md shadow-brand-500/20' 
+                        : 'bg-slate-800/80 border-slate-700/80 text-slate-300 hover:bg-slate-700 hover:text-white'
+                    }">
+                        ${cat}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function getFilteredPosts() {
+            return posts.filter(post => {
+                const matchesCategory = currentFilterCategory === 'All' || post.category.toLowerCase() === currentFilterCategory.toLowerCase();
+                const q = searchQuery.toLowerCase().trim();
+                const matchesSearch = !q || 
+                    post.title.toLowerCase().includes(q) || 
+                    post.content.toLowerCase().includes(q) || 
+                    post.category.toLowerCase().includes(q) ||
+                    post.excerpt.toLowerCase().includes(q);
+                
+                return matchesCategory && matchesSearch;
+            }).sort((a, b) => {
+                if (currentSort === 'popular') return b.likes - a.likes;
+                if (currentSort === 'comments') return b.comments.length - a.comments.length;
+                // Default: Newest (assuming post array order or date string fallback)
+                return posts.indexOf(b) - posts.indexOf(a);
+            });
+        }
+
+        /**
+         * FEED RENDERING
+         */
+        function renderFeed() {
+            const filtered = getFilteredPosts();
+
+            // Update status string
+            if (searchQuery) {
+                feedStatusText.textContent = `Found ${filtered.length} article(s) matching "${searchQuery}"`;
+            } else if (currentFilterCategory !== 'All') {
+                feedStatusText.textContent = `Showing articles in "${currentFilterCategory}"`;
+            } else {
+                feedStatusText.textContent = `Showing all ${posts.length} articles`;
+            }
+
+            if (filtered.length === 0) {
+                articlesGrid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            articlesGrid.innerHTML = filtered.map(post => createPostCardHTML(post)).join('');
+        }
+
+        function createPostCardHTML(post) {
+            const isLiked = post.liked;
+            return `
+                <article class="post-card bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition-all duration-300 flex flex-col group shadow-xl hover:shadow-2xl hover:shadow-blue-500/5 cursor-pointer" data-id="${post.id}">
+                    <!-- Card Thumbnail -->
+                    <div class="relative h-48 w-full bg-slate-950 overflow-hidden">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                             src="${post.coverImage}" 
+                             alt="${post.title}" 
+                             loading="lazy"
+                             onerror="this.src='https://images.unsplash.com/photo-1518770660439-4636190af475?w=800'">
+                        <div class="absolute top-3 left-3">
+                            <span class="bg-slate-900/80 backdrop-blur-md text-brand-500 border border-slate-700/60 text-xs font-semibold px-2.5 py-1 rounded-lg">
+                                ${post.category}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2 text-xs text-slate-400">
+                                <span>${post.date}</span>
+                                <span>•</span>
+                                <span>${post.readTime}</span>
+                            </div>
+                            <h2 class="text-lg font-bold text-white group-hover:text-brand-500 transition-colors line-clamp-2 leading-snug">
+                                ${escapeHTML(post.title)}
+                            </h2>
+                            <p class="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                                ${escapeHTML(post.excerpt)}
+                            </p>
+                        </div>
+
+                        <!-- Card Footer -->
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                            <div class="flex items-center gap-2.5">
+                                <img class="w-7 h-7 rounded-full object-cover ring-1 ring-slate-700" src="${post.author.avatar}" alt="${post.author.name}" onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'">
+                                <span class="text-xs font-medium text-slate-300">${escapeHTML(post.author.name)}</span>
+                            </div>
+
+                            <div class="flex items-center gap-3 text-xs text-slate-400">
+                                <span class="flex items-center gap-1 hover:text-slate-200">
+                                    <i class="fa-regular fa-comment"></i>
+                                    <span>${post.comments.length}</span>
+                                </span>
+                                <button class="card-like-btn flex items-center gap-1.5 ${isLiked ? 'text-rose-500' : 'hover:text-rose-400'} transition-colors" data-id="${post.id}">
+                                    <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                                    <span>${post.likes}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        /**
+         * DETAIL VIEW RENDERING
+         */
+        function openArticleDetail(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+
+            activePostId = postId;
+
+            // Fill content
+            detailCover.src = post.coverImage;
+            detailCategory.textContent = post.category;
+            detailTitle.textContent = post.title;
+            detailAuthorAvatar.src = post.author.avatar;
+            detailAuthorName.textContent = post.author.name;
+            detailDate.textContent = post.date;
+            detailReadTime.textContent = post.readTime;
+
+            // Render Like Button state
+            updateDetailLikeButtonState(post);
+
+            // Render Markdown formatted content
+            detailContent.innerHTML = parseMarkdownToHTML(post.content);
+
+            // Render Comments
+            renderComments(post);
+
+            // Switch views
+            feedView.classList.add('hidden');
+            detailView.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateDetailLikeButtonState(post) {
+            detailLikeCount.textContent = post.likes;
+            const heartIcon = detailLikeBtn.querySelector('i');
+            if (post.liked) {
+                detailLikeBtn.classList.add('text-rose-500', 'bg-rose-500/10', 'border-rose-500/30');
+                heartIcon.classList.remove('fa-regular');
+                heartIcon.classList.add('fa-solid');
+            } else {
+                detailLikeBtn.classList.remove('text-rose-500', 'bg-rose-500/10', 'border-rose-500/30');
+                heartIcon.classList.remove('fa-solid');
+                heartIcon.classList.add('fa-regular');
+            }
+        }
+
+        function renderComments(post) {
+            detailCommentCount.textContent = post.comments.length;
+
+            if (post.comments.length === 0) {
+                commentsList.innerHTML = `
+                    <div class="text-center py-8 text-slate-500 text-sm">
+                        No comments yet. Be the first to start the conversation!
+                    </div>
+                `;
+                return;
+            }
+
+            commentsList.innerHTML = post.comments.map(comment => `
+                <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-4 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold text-white text-xs">
+                                ${comment.author.charAt(0).toUpperCase()}
+                            </div>
+                            <span class="font-semibold text-slate-200 text-sm">${escapeHTML(comment.author)}</span>
+                        </div>
+                        <span class="text-xs text-slate-500">${comment.date}</span>
+                    </div>
+                    <p class="text-sm text-slate-300 pl-10 leading-relaxed">
+                        ${escapeHTML(comment.text)}
+                    </p>
+                </div>
+            `).join('');
+        }
+
+        /**
+         * EVENT HANDLERS & LISTENERS
+         */
+        function setupEventListeners() {
+            // View Navigation
+            navLogo.addEventListener('click', showFeedView);
+            backToFeedBtn.addEventListener('click', showFeedView);
+
+            // Article Card Click Delegate (excluding like button)
+            articlesGrid.addEventListener('click', (e) => {
+                const likeBtn = e.target.closest('.card-like-btn');
+                if (likeBtn) {
+                    e.stopPropagation();
+                    const id = likeBtn.dataset.id;
+                    toggleLikePost(id);
+                    return;
+                }
+
+                const card = e.target.closest('.post-card');
+                if (card) {
+                    openArticleDetail(card.dataset.id);
+                }
+            });
+
+            // Filter Chips Delegate
+            tagFiltersContainer.addEventListener('click', (e) => {
+                const button = e.target.closest('.tag-chip');
+                if (button) {
+                    currentFilterCategory = button.dataset.category;
+                    renderCategoryFilters();
+                    renderFeed();
+                }
+            });
+
+            // Search Inputs
+            const handleSearch = (val) => {
+                searchQuery = val;
+                if (val) {
+                    clearSearchBtn.classList.remove('hidden');
+                } else {
+                    clearSearchBtn.classList.add('hidden');
+                }
+                renderFeed();
+            };
+
+            searchInput.addEventListener('input', (e) => handleSearch(e.target.value));
+            mobileSearchInput.addEventListener('input', (e) => handleSearch(e.target.value));
+
+            clearSearchBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                mobileSearchInput.value = '';
+                handleSearch('');
+            });
+
+            resetFiltersBtn.addEventListener('click', () => {
+                searchQuery = '';
+                currentFilterCategory = 'All';
+                searchInput.value = '';
+                mobileSearchInput.value = '';
+                clearSearchBtn.classList.add('hidden');
+                renderCategoryFilters();
+                renderFeed();
+            });
+
+            // Sort Selector
+            sortSelect.addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                renderFeed();
+            });
+
+            // Like Action inside Detail View
+            detailLikeBtn.addEventListener('click', () => {
+                if (activePostId) {
+                    toggleLikePost(activePostId);
+                    const post = posts.find(p => p.id === activePostId);
+                    if (post) updateDetailLikeButtonState(post);
+                }
+            });
+
+            // Comment Submission
+            addCommentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (!activePostId) return;
+
+                const authorInput = document.getElementById('comment-author');
+                const textInput = document.getElementById('comment-text');
+
+                const post = posts.find(p => p.id === activePostId);
+                if (post) {
+                    const newComment = {
+                        id: 'c-' + Date.now(),
+                        author: authorInput.value.trim(),
+                        text: textInput.value.trim(),
+                        date: 'Just now'
+                    };
+
+                    post.comments.push(newComment);
+                    savePostsToStorage();
+                    renderComments(post);
+                    textInput.value = '';
+                    showToast('Comment posted successfully!');
+                }
+            });
+
+            // Modal Trigger & Close
+            openCreateModalBtn.addEventListener('click', () => createModal.classList.remove('hidden'));
+            closeModalBtn.addEventListener('click', closeModal);
+            cancelModalBtn.addEventListener('click', closeModal);
+
+            createModal.addEventListener('click', (e) => {
+                if (e.target === createModal) closeModal();
+            });
+
+            // Create Post Form Submission
+            createPostForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const title = document.getElementById('post-title').value.trim();
+                const category = document.getElementById('post-category').value;
+                const author = document.getElementById('post-author').value.trim();
+                const cover = document.getElementById('post-cover').value.trim();
+                const content = document.getElementById('post-content').value.trim();
+
+                const newPost = {
+                    id: 'post-' + Date.now(),
+                    title: title,
+                    category: category,
+                    author: {
+                        name: author,
+                        avatar: `https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150`
+                    },
+                    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                    readTime: Math.max(1, Math.ceil(content.split(' ').length / 150)) + ' min read',
+                    likes: 0,
+                    liked: false,
+                    coverImage: cover || `https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1000`,
+                    excerpt: content.substring(0, 120).replace(/[#*`>]/g, '') + '...',
+                    content: content,
+                    comments: []
+                };
+
+                posts.unshift(newPost);
+                savePostsToStorage();
+                closeModal();
+                createPostForm.reset();
+                showFeedView();
+                renderFeed();
+                showToast('Article published successfully!');
+            });
+
+            // Share Button Copy Link
+            shareBtn.addEventListener('click', () => {
+                // Fallback copy string
+                const tempInput = document.createElement('input');
+                tempInput.value = window.location.href;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast('Article link copied to clipboard!');
+            });
+
+            // Reset Demo Data Button
+            resetStorageBtn.addEventListener('click', () => {
+                if (confirm('Are you sure you want to reset back to initial demo data? All local posts and comments will be reset.')) {
+                    localStorage.removeItem('devblog_posts');
+                    posts = [...INITIAL_POSTS];
+                    savePostsToStorage();
+                    showFeedView();
+                    renderCategoryFilters();
+                    renderFeed();
+                    showToast('Data reset to default demo posts.');
+                }
+            });
+        }
+
+        /**
+         * ACTION HELPERS
+         */
+        function showFeedView() {
+            activePostId = null;
+            detailView.classList.add('hidden');
+            feedView.classList.remove('hidden');
+            renderFeed();
+        }
+
+        function closeModal() {
+            createModal.classList.add('hidden');
+        }
+
+        function toggleLikePost(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+
+            if (post.liked) {
+                post.likes--;
+                post.liked = false;
+            } else {
+                post.likes++;
+                post.liked = true;
+            }
+
+            savePostsToStorage();
+            renderFeed();
+        }
+
+        /**
+         * MINI MARKDOWN TO HTML PARSER
+         */
+        function parseMarkdownToHTML(markdown) {
+            if (!markdown) return '';
+            
+            let html = markdown
+                // Code blocks
+                .replace(/```([\s\S]*?)```/g, (match, p1) => `<pre><code>${escapeHTML(p1.trim())}</code></pre>`)
+                // Inline code
+                .replace(/`([^`]+)`/g, (match, p1) => `<code>${escapeHTML(p1)}</code>`)
+                // Headings
+                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                // Blockquotes
+                .replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>')
+                // Bold & Italics
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                // Line breaks / paragraphs
+                .split('\n\n')
+                .map(paragraph => {
+                    const trimmed = paragraph.trim();
+                    if (!trimmed) return '';
+                    if (trimmed.startsWith('<h') || trimmed.startsWith('<pre') || trimmed.startsWith('<blockquote')) {
+                        return trimmed;
+                    }
+                    return `<p>${trimmed.replace(/\n/g, '<br>')}</p>`;
+                })
+                .join('');
+
+            return html;
+        }
+
+        /**
+         * UTILS
+         */
+        function escapeHTML(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function showToast(message) {
+            const toastContainer = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-slate-900 border border-brand-500/50 text-white text-xs sm:text-sm px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 transform transition-all duration-300 translate-y-4 opacity-0 pointer-events-auto';
+            toast.innerHTML = `
+                <i class="fa-solid fa-circle-check text-brand-500"></i>
+                <span>${message}</span>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Animate In
+            setTimeout(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
+
+            // Remove Toast
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize App on DOM load
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
